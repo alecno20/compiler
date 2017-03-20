@@ -1,0 +1,6 @@
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Debug\compiler.exe.config
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Debug\compiler.exe
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Debug\compiler.pdb
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.csprojResolveAssemblyReference.cache
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.exe
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.pdb
