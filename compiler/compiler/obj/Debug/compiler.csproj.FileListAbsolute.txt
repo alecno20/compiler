@@ -4,3 +4,9 @@ C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Debug\compiler
 C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.csprojResolveAssemblyReference.cache
 C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.exe
 C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Debug\compiler.pdb
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\bin\Debug\compiler.exe.config
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\bin\Debug\compiler.exe
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\bin\Debug\compiler.pdb
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\obj\Debug\compiler.csprojResolveAssemblyReference.cache
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\obj\Debug\compiler.exe
+C:\Users\alecn\Documents\Gits\compiler\compiler\compiler\obj\Debug\compiler.pdb

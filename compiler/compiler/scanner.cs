@@ -66,6 +66,7 @@
                     }
                 }
             }
+            tokens.Add("EOF");
             return tokens;
         }
         public void printStrings(System.Collections.Generic.List<string> strings)
@@ -89,23 +90,90 @@
             System.Collections.Generic.List<string[]> tokens = new System.Collections.Generic.List<string[]>();
             for (int i = 0; i < strings.Count; i++)
             {   
-                //checks if it is a variable name or namespace
-                if (char.IsLetter(strings[i][0]))
+                switch (strings[i])
                 {
-                    if(strings[i]=="void"|| strings[i] == "int")//fdsafsadfsadfsadfsafsafdsfsafffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    tokens.Add(new string[] { "variable", strings[i] });
+                    case ";":
+                        tokens.Add(new string[] { "semicolon", strings[i] });
+                        break;
+                    case ",":
+                        tokens.Add(new string[] { "comma", strings[i] });
+                        break;
+                    case "+":
+                        tokens.Add(new string[] { "plus", strings[i] });
+                        break;
+                    case "-":
+                        tokens.Add(new string[] { "minus", strings[i] });
+                        break;
+                    case "*":
+                        tokens.Add(new string[] { "multiply", strings[i] });
+                        break;
+                    case "/":
+                        tokens.Add(new string[] { "divide", strings[i] });
+                        break;
+                    case "(":
+                        tokens.Add(new string[] { "lParenthesis", strings[i] });
+                        break;
+                    case ")":
+                        tokens.Add(new string[] { "rParenthesis", strings[i] });
+                        break;
+                    case "=":
+                        tokens.Add(new string[] { "equal", strings[i] });
+                        break;
+                    case "{":
+                        tokens.Add(new string[] { "lBrace", strings[i] });
+                        break;
+                    case "}":
+                        tokens.Add(new string[] { "rBrace", strings[i] });
+                        break;
+                    case "[":
+                        tokens.Add(new string[] { "lBracket", strings[i] });
+                        break;
+                    case "]":
+                        tokens.Add(new string[] { "rBracket", strings[i] });
+                        break;
+                    case "if":
+                        tokens.Add(new string[] { "if", strings[i] });
+                        break;
+                    case "else":
+                        tokens.Add(new string[] { "else", strings[i] });
+                        break;
+                    case "read":
+                        tokens.Add(new string[] { "read", strings[i] });
+                        break;
+                    case "write":
+                        tokens.Add(new string[] { "write", strings[i] });
+                        break;
+                    case "!":
+                        tokens.Add(new string[] { "not", strings[i] });
+                        break;
+                    case "return":
+                        tokens.Add(new string[] { "return", strings[i] });
+                        break;
+                    case "<":
+                        tokens.Add(new string[] { "lessThan", strings[i] });
+                        break;
+                    case ">":
+                        tokens.Add(new string[] { "greaterThan", strings[i] });
+                        break;
+                    case "while":
+                        tokens.Add(new string[] { "while", strings[i] });
+                        break;
+                    case "EOF":
+                        tokens.Add(new string[] { "EOF", strings[i] });
+                        break;
+                    default:
+                        //checks if it is a variable
+                        if (char.IsLetter(strings[i][0]))
+                        {
+                            tokens.Add(new string[] { "id", strings[i] });
+                        }
+                        //checks if it is a value
+                        else if (char.IsNumber(strings[i][0]))
+                        {
+                            tokens.Add(new string[] { "number", strings[i] });
+                        }
+                        break;
                 }
-                //checks if it is a value
-                if (char.IsNumber(strings[i][0]))
-                {
-                    tokens.Add(new string[] { "value", strings[i] });
-                }
-                //check if it is an operator
-                else if (strings[i][0]==';'||strings[i][0]=='('||strings[i][0]==')'||strings[i][0]=='{'||strings[i][0]=='}'||strings[i][0]=='+'||strings[i][0]=='/'||strings[i][0]=='*'||strings[i][0]=='-'||strings[i][0]=='='||strings[i][0]=='!')
-                {
-                    tokens.Add(new string[] { "operator", strings[i] });
-                }
-
             }
             return tokens;
         }
