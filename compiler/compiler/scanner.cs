@@ -6,11 +6,13 @@
         public void scan(string fileName)
         {
             string fileContents=getFile(fileName);
-            System.Collections.Generic.List<string> strings =toStrings(fileContents);
-            printStrings(strings);
-            System.Collections.Generic.List<string[]> tokens = tokenizer(strings);
+            System.Console.WriteLine(fileContents);
+            System.Collections.Generic.List<token> tokens =toStrings(fileContents);
+            printValues(tokens);
+            tokens = tokenizer(tokens);
             printTokens(tokens);
         }
+
         //converts file to string
         public string getFile(string fileName)
         {
@@ -29,17 +31,23 @@
             return file;
         }
         //converts string to individual strings
-        public System.Collections.Generic.List<string> toStrings(string fileContents)
+        public System.Collections.Generic.List<token> toStrings(string fileContents)
         {
-            System.Collections.Generic.List<string> tokens= new System.Collections.Generic.List<string>();
+            System.Collections.Generic.List<token> tokens= new System.Collections.Generic.List<token>();
             string currentToken = "";
+            int line = 1;
             for(int i=0; i<fileContents.Length;i++)
             {
+                //checks if newline character
+                if (fileContents[i].Equals('\r'))
+                {
+                    line++;
+                }
                 //check if white space
-                if(char.IsWhiteSpace(fileContents[i])){
+                else if(char.IsWhiteSpace(fileContents[i])){
                     if (!(string.IsNullOrEmpty(currentToken)))
                     {
-                        tokens.Add(currentToken);
+                        tokens.Add(new token(currentToken,line));
                         currentToken = "";
                     }
                 }
@@ -53,124 +61,125 @@
                 {
                     if (!(string.IsNullOrEmpty(currentToken)))
                     {
-                        tokens.Add(currentToken);
+                        tokens.Add(new token(currentToken, line));
                         currentToken = System.Char.ToString(fileContents[i]);
-                        tokens.Add(currentToken);
+                        tokens.Add(new token(currentToken, line));
                         currentToken = "";
                     }
                     else
                     {
                         currentToken = System.Char.ToString(fileContents[i]);
-                        tokens.Add(currentToken);
+                        tokens.Add(new token(currentToken, line));
                         currentToken = "";
                     }
                 }
             }
-            tokens.Add("EOF");
+            //adds EOF token
+            tokens.Add(new token("EOF",line));
             return tokens;
         }
-        public void printStrings(System.Collections.Generic.List<string> strings)
+        //prints the value of the tokens
+        public void printValues(System.Collections.Generic.List<token> tokens)
         {
-            for(int i = 0; i < strings.Count; i++)
+            for(int i = 0; i < tokens.Count; i++)
             {
-                System.Console.WriteLine(strings[i]);
+                System.Console.WriteLine(tokens[i].value);
             }
         }
         //prints tokens
-        public void printTokens(System.Collections.Generic.List<string[]> tokens)
+        public void printTokens(System.Collections.Generic.List<token> tokens)
         {
             for (int i = 0; i < tokens.Count; i++)
             {
-                System.Console.WriteLine("token- type:"+tokens[i][0]+" value:"+tokens[i][1]);
+                System.Console.WriteLine("token- type:"+tokens[i].type+" value:"+tokens[i].value+" line:"+tokens[i].line);
             }
         }
         //converts to tokens
-        public System.Collections.Generic.List<string[]> tokenizer(System.Collections.Generic.List<string> strings)
+        public System.Collections.Generic.List<token> tokenizer(System.Collections.Generic.List<token> tokens)
         {
-            System.Collections.Generic.List<string[]> tokens = new System.Collections.Generic.List<string[]>();
-            for (int i = 0; i < strings.Count; i++)
+            for (int i = 0; i < tokens.Count; i++)
             {   
-                switch (strings[i])
+                switch (tokens[i].value)
                 {
                     case ";":
-                        tokens.Add(new string[] { "semicolon", strings[i] });
+                        tokens[i].type="semicolon";
                         break;
                     case ",":
-                        tokens.Add(new string[] { "comma", strings[i] });
+                        tokens[i].type = "comma";
                         break;
                     case "+":
-                        tokens.Add(new string[] { "plus", strings[i] });
+                        tokens[i].type = "plus";
                         break;
                     case "-":
-                        tokens.Add(new string[] { "minus", strings[i] });
+                        tokens[i].type = "minus";
                         break;
                     case "*":
-                        tokens.Add(new string[] { "multiply", strings[i] });
+                        tokens[i].type = "multiply";
                         break;
                     case "/":
-                        tokens.Add(new string[] { "divide", strings[i] });
+                        tokens[i].type = "divide";
                         break;
                     case "(":
-                        tokens.Add(new string[] { "lParenthesis", strings[i] });
+                        tokens[i].type = "lParenthesis";
                         break;
                     case ")":
-                        tokens.Add(new string[] { "rParenthesis", strings[i] });
+                        tokens[i].type = "rParenthesis";
                         break;
                     case "=":
-                        tokens.Add(new string[] { "equal", strings[i] });
+                        tokens[i].type = "equal";
                         break;
                     case "{":
-                        tokens.Add(new string[] { "lBrace", strings[i] });
+                        tokens[i].type = "lBrace";
                         break;
                     case "}":
-                        tokens.Add(new string[] { "rBrace", strings[i] });
+                        tokens[i].type = "rBrace";
                         break;
                     case "[":
-                        tokens.Add(new string[] { "lBracket", strings[i] });
+                        tokens[i].type = "lBracket";
                         break;
                     case "]":
-                        tokens.Add(new string[] { "rBracket", strings[i] });
+                        tokens[i].type = "rBracket";
                         break;
                     case "if":
-                        tokens.Add(new string[] { "if", strings[i] });
+                        tokens[i].type = "if";
                         break;
                     case "else":
-                        tokens.Add(new string[] { "else", strings[i] });
+                        tokens[i].type = "else";
                         break;
                     case "read":
-                        tokens.Add(new string[] { "read", strings[i] });
+                        tokens[i].type = "read";
                         break;
                     case "write":
-                        tokens.Add(new string[] { "write", strings[i] });
+                        tokens[i].type = "write";
                         break;
                     case "!":
-                        tokens.Add(new string[] { "not", strings[i] });
+                        tokens[i].type = "not";
                         break;
                     case "return":
-                        tokens.Add(new string[] { "return", strings[i] });
+                        tokens[i].type = "return";
                         break;
                     case "<":
-                        tokens.Add(new string[] { "lessThan", strings[i] });
+                        tokens[i].type = "lessThan";
                         break;
                     case ">":
-                        tokens.Add(new string[] { "greaterThan", strings[i] });
+                        tokens[i].type = "greaterThan";
                         break;
                     case "while":
-                        tokens.Add(new string[] { "while", strings[i] });
+                        tokens[i].type = "while";
                         break;
                     case "EOF":
-                        tokens.Add(new string[] { "EOF", strings[i] });
+                        tokens[i].type = "EOF";
                         break;
                     default:
                         //checks if it is a variable
-                        if (char.IsLetter(strings[i][0]))
+                        if (char.IsLetter(tokens[i].value[0]))
                         {
-                            tokens.Add(new string[] { "id", strings[i] });
+                            tokens[i].type = "id";
                         }
                         //checks if it is a value
-                        else if (char.IsNumber(strings[i][0]))
+                        else if (char.IsNumber(tokens[i].value[0]))
                         {
-                            tokens.Add(new string[] { "number", strings[i] });
+                            tokens[i].type = "number";
                         }
                         break;
                 }
