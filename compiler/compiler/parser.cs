@@ -16,20 +16,15 @@ namespace compiler
             System.Console.WriteLine(error);
         }
         //............................................................................
-        //parses an entire program
+        //begins to parse an entire program
         //............................................................................
         public void parseProgram(List<treeNode> syntaxTree, List<token> tokens)
         {
             //parses a program
-            syntaxTree.Add(new treeNode("program", 0, "program"));
-
-            //parses a function
-            parseFunction(syntaxTree, tokens);
-
+            syntaxTree.Add(new treeNode("program", 0, "program",));
             //checks for end of file token
             if (tokens[0].type == "EOF")
             {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
                 tokens.RemoveAt(0);
                 if (tokens.Count == 0)
                 {
@@ -37,22 +32,25 @@ namespace compiler
                 }
                 else
                 {
-                    error("expected EOF character, except found more characters");
+                    error("expected end of file, except found more characters");
                 }
             }
-
+            else
+            {
+                error("expected EOF character, except found more characters");
+            }
         }
         //............................................................................
         //parses a variable declaration
         //............................................................................
-        /*public List<treeNode> parseDeclaration(List<treeNode> syntaxTree, List<token> tokens)
+        public List<treeNode> parseDeclaration(List<treeNode> syntaxTree, List<token> tokens)
         {
             if ()
             {
 
             }
             return syntaxTree;
-        }*/
+        }
         //............................................................................
         //parses a function call
         //............................................................................

@@ -22,7 +22,7 @@ namespace compiler
         public treeNode sibling; //Pointer to Sibling 
 
         //treeNode with string value
-        public treeNode(string type, int line, string value)
+        public treeNode(string type, int line, string value, treeNode c1, treeNode c2, treeNode c3, treeNode sibling)
         {
             nodeType = type;
             lineNumber = line;
