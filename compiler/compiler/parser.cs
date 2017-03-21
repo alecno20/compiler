@@ -43,6 +43,17 @@ namespace compiler
 
         }
         //............................................................................
+        //parses a variable declaration
+        //............................................................................
+        /*public List<treeNode> parseDeclaration(List<treeNode> syntaxTree, List<token> tokens)
+        {
+            if ()
+            {
+
+            }
+            return syntaxTree;
+        }*/
+        //............................................................................
         //parses a function call
         //............................................................................
         public List<treeNode> parseFunction(List<treeNode> syntaxTree, List<token> tokens)
@@ -55,7 +66,7 @@ namespace compiler
             }
             else
             {
-                error("expected return type, except found"+tokens[0].type+"on line"+tokens[0].line);
+                error("expected return type, except found "+tokens[0].type+" on line "+tokens[0].line);
             }
             //checks for function name
             if (tokens[0].type == "id"|| tokens[0].type == "main")
@@ -65,7 +76,7 @@ namespace compiler
             }
             else
             {
-                error("expected function id type, except found" + tokens[0].type + "on line" + tokens[0].line);
+                error("expected function id type, except found " + tokens[0].type + " on line " + tokens[0].line);
             }
             //checks for left parenthesis
             if (tokens[0].type == "lParenthesis")
@@ -75,22 +86,30 @@ namespace compiler
             }
             else
             {
-                error("expected function parenthesis type, except found" + tokens[0].type + "on line" + tokens[0].line);
+                error("expected lParenthesis, except found " + tokens[0].type + " on line " + tokens[0].line);
             }
             //checks for parameters
-            while(tokens[0].type == "int")
+            if (tokens[0].type == "void")
             {
                 syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
                 tokens.RemoveAt(0);
-                //checks for parameter name
-                if (tokens[0].type == "id" )
-                {
+            }
+            else
+            {
+                while (tokens[0].type == "int")
+                { 
                     syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
                     tokens.RemoveAt(0);
-                }
-                else
-                {
-                    error("expected id, except found" + tokens[0].type + "on line" + tokens[0].line);
+                    //checks for parameter name
+                    if (tokens[0].type == "id")
+                    {
+                        syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
+                        tokens.RemoveAt(0);
+                    }
+                    else
+                    {
+                        error("expected id, except found " + tokens[0].type + "on line" + tokens[0].line);
+                    }
                 }
             }
             //checks for right parenthesis
@@ -101,28 +120,28 @@ namespace compiler
             }
             else
             {
-                error("expected function parenthesis type, except found" + tokens[0].type + "on line" + tokens[0].line);
+                error("expected rParenthesis, except found " + tokens[0].type + " on line " + tokens[0].line);
             }
             //checks for left bracket
-            if (tokens[0].type == "lBracket")
+            if (tokens[0].type == "lBrace")
             {
                 syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
                 tokens.RemoveAt(0);
             }
             else
             {
-                error("expected function parenthesis type, except found" + tokens[0].type + "on line" + tokens[0].line);
+                error("expected lBrace, except found " + tokens[0].type + " on line " + tokens[0].line);
             }
             //check for stuff?
             //checks for right bracket
-            if (tokens[0].type == "rBracket")
+            if (tokens[0].type == "rBrace")
             {
                 syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
                 tokens.RemoveAt(0);
             }
             else
             {
-                error("expected function parenthesis type, except found" + tokens[0].type + "on line" + tokens[0].line);
+                error("expected rBrace, except found " + tokens[0].type + " on line " + tokens[0].line);
             }
             return syntaxTree;
         }

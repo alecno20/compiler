@@ -3,7 +3,7 @@
     class scanner
     {
         //tokenizes file by calling methods
-        public void scan(string fileName)
+        public System.Collections.Generic.List<token> scan(string fileName)
         {
             string fileContents=getFile(fileName);
             System.Console.WriteLine(fileContents);
@@ -11,11 +11,13 @@
             printValues(tokens);
             tokens = tokenizer(tokens);
             printTokens(tokens);
+            return tokens;
         }
 
         //converts file to string
         public string getFile(string fileName)
         {
+            System.Console.WriteLine("opening fie"+fileName);
             string file;
             if (System.IO.File.Exists(fileName))
             {
@@ -101,6 +103,12 @@
             {   
                 switch (tokens[i].value)
                 {
+                    case "void":
+                        tokens[i].type = "void";
+                        break;
+                    case "int":
+                        tokens[i].type = "int";
+                        break;
                     case ";":
                         tokens[i].type="semicolon";
                         break;

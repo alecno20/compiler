@@ -28,12 +28,5 @@ namespace compiler
             lineNumber = line;
             sValue = value;
         }
-        //treeNode with int value
-        public treeNode(string type, int line, int value)
-        {
-            nodeType = type;
-            lineNumber = line;
-            nValue = value;
-        }
     }
 }
