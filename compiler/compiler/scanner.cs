@@ -167,12 +167,13 @@
                     case "while":
                         tokens[i].type = "while";
                         break;
-                    case "EOF":
-                        tokens[i].type = "EOF";
-                        break;
                     default:
                         //checks if it is a variable
-                        if (char.IsLetter(tokens[i].value[0]))
+                        if (tokens[i].value == "EOF" || i == (tokens.Count - 1))
+                        {
+                            tokens[i].type = "EOF";
+                        }
+                        else if (char.IsLetter(tokens[i].value[0]))
                         {
                             tokens[i].type = "id";
                         }
@@ -181,6 +182,7 @@
                         {
                             tokens[i].type = "number";
                         }
+                        
                         break;
                 }
             }
