@@ -6,10 +6,9 @@
         {
             System.Collections.Generic.List<token> tokens= new System.Collections.Generic.List<token>();
             scanner scanBoy = new scanner();
-            tokens= scanBoy.scan("sample.cm");
-            System.Collections.Generic.List<treeNode> ast = new System.Collections.Generic.List<treeNode>();
+            tokens= scanBoy.scan("sampleEmpty.cm");
             parser parseBoy = new parser();
-            parseBoy.parseProgram(ast, tokens);
+            treeNode ast= parseBoy.parseProgram(tokens);
             System.Console.ReadKey();
         }
     }
