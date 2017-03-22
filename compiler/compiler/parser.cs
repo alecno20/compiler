@@ -65,7 +65,6 @@ namespace compiler
             }
             return program;
         }
-
         //............................................................................
         //parses a declaration list
         //............................................................................
@@ -73,38 +72,31 @@ namespace compiler
         {
 
             //parses a declaration list
-            treeNode declarationList = new treeNode("declarationList", 0, "declarationList", parseDeclaration(tokens, ref position), null, null);
-            //checks for first parse success and attempts second
-            if (declarationList.C1 != null)
-            {
-                declarationList.C2 = parseDeclarationList(tokens, ref position);
-            }
-            //checks for first parse fail and returns fail
-            else
-            {
-                return null;
-            }
+            treeNode declarationList = new treeNode("declarationList", 0, "declarationList", parseDeclaration(tokens, ref position), parseDeclarationListPrime(tokens, ref position), null);
             return declarationList;
         }
         //............................................................................
-        //parses a declaration list
+        //parses a declaration list prime
         //............................................................................
         public treeNode parseDeclarationListPrime(List<token> tokens, ref int position)
         {
-
-            //parses a declaration list
-            treeNode declarationList = new treeNode("declarationList", 0, "declarationList", parseDeclaration(tokens, ref position), null, null);
-            //checks for first parse success and attempts second
-            if (declarationList.C1 != null)
+            try
             {
-                declarationList.C2 = parseDeclarationList(tokens, ref position);
+                //checks the current token
+                if (tokens[position].type == "int" || tokens[position].type == "void")
+                {
+                    treeNode declarationListPrime = new treeNode("declarationListprime", tokens[position].line, "declarationListprime", parseDeclaration(tokens, ref position), parseDeclarationListPrime(tokens, ref position), null);
+                    return declarationListPrime;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            //checks for first parse fail and returns fail
-            else
+            catch(System.ArgumentOutOfRangeException)
             {
                 return null;
             }
-            return declarationList;
         }
 
         //............................................................................
@@ -128,7 +120,7 @@ namespace compiler
             return declaration;
         }
 
-        /*//............................................................................
+        //............................................................................
         //parses a varDeclaration
         //............................................................................
         public treeNode parseVarDeclaration(List<token> tokens, ref int position)
@@ -175,8 +167,10 @@ namespace compiler
                  if ((tokens[position].type == "int" || tokens[position].type == "void") & tokens[position + 1].type == "id" & tokens[position + 2].type == "lParenthesis")
                  {
                      funDeclaration = new treeNode("funDeclaration", tokens[position].line, tokens[position+1].value,null, null, null);
+                     position += 3;
                      funDeclaration.C1 = parseParams(tokens, ref position);
-                     funDeclaration.C2 = parseCompoundStmt(tokens, ref position);
+                     
+                     //funDeclaration.C2 = parseCompoundStmt(tokens, ref position);
 
                  }
                  else
@@ -220,6 +214,6 @@ namespace compiler
                 return null;
             }
             return funDeclaration;
-        }*/
+        }
     }
 }
