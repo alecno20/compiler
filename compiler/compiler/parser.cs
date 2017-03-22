@@ -4,10 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Console.WriteLine(tokens[position].type+ "int"+tokens[position+1].type + "id"+ tokens[position+2].type + "lBracket"+ tokens[position+3].type + "number"+ tokens[position+4].type + "rBracket"+ tokens[position+5].type + "semicolon");
+
 namespace compiler
 {
     class parser
     {
+        //............................................................................
+        //prints parse tree
+        //............................................................................
+        public void printParseTree(treeNode ast)
+        {
+            Console.WriteLine("type:" + ast.nodeType + " name:" + ast.name + " line:" + ast.lineNumber);
+            if (ast.C1 != null)
+            {
+                Console.WriteLine("C1");
+                printParseTree(ast.C1);
+            }
+            if (ast.C2 != null)
+            {
+                Console.WriteLine("C1");
+                printParseTree(ast.C2);
+            }
+            if (ast.C3 != null)
+            {
+                Console.WriteLine("C1");
+                printParseTree(ast.C3);
+            }
+
+        }
+
         //............................................................................
         //prints an error
         //............................................................................
@@ -22,195 +48,178 @@ namespace compiler
         //............................................................................
         //begins to parse an entire program
         //............................................................................
-        public treeNode parseProgram( List<token> tokens)
+        public treeNode parseProgram(List<token> tokens)
         {
+            int position = 0;
             //parses a program
-            treeNode ast= new treeNode("program", 0, "program", null, null, null, null);
-            //checks for more stuff 
-            if (tokens.Count > 3)
-            {
-                //checks if sibling is a variable
-                if (tokens[0].type == "int" & tokens[1].type == "id" & tokens[2].type == "semicolon")
-                {
-                    //ast = new treeNode("program", 0, "program", null, null, null, parseVariable(tokens));
-                }
-                //checks if sibling is an array
-                else if (tokens[0].type == "int" & tokens[1].type == "id" & tokens[2].type == "lBracket")
-                {
-                    ast = new treeNode("program", 0, "program", null, null, null, parseArray(tokens));
-                }
-                //checks if sibling is a function
-                else if ((tokens[0].type == "int" || tokens[0].type == "void") & tokens[1].type == "id" & tokens[2].type == "lParenthesis")
-                {
-                    //  treeNode program = new treeNode("program", 0, "program", null, null, null, parseFunction(tokens));
-                }
-            }
+            treeNode program = new treeNode("program", 0, "program", parseDeclarationList(tokens, ref position), null, null);
             //checks for end of file token
-            if (tokens[0].type == "EOF")
+            if (tokens[position].type == "EOF")
             {
-                tokens.RemoveAt(0);
-                if (tokens.Count == 0)
+                System.Console.WriteLine("parse complete");
+            }
+            else
+            {
+                printParseTree(program);
+                error("wanted eof, got: "+tokens[position].type+" error on line"+ tokens[position].line);
+            }
+            return program;
+        }
+
+        //............................................................................
+        //parses a declaration list
+        //............................................................................
+        public treeNode parseDeclarationList(List<token> tokens, ref int position)
+        {
+
+            //parses a declaration list
+            treeNode declarationList = new treeNode("declarationList", 0, "declarationList", parseDeclaration(tokens, ref position), null, null);
+            //checks for first parse success and attempts second
+            if (declarationList.C1 != null)
+            {
+                declarationList.C2 = parseDeclarationList(tokens, ref position);
+            }
+            //checks for first parse fail and returns fail
+            else
+            {
+                return null;
+            }
+            return declarationList;
+        }
+        //............................................................................
+        //parses a declaration list
+        //............................................................................
+        public treeNode parseDeclarationListPrime(List<token> tokens, ref int position)
+        {
+
+            //parses a declaration list
+            treeNode declarationList = new treeNode("declarationList", 0, "declarationList", parseDeclaration(tokens, ref position), null, null);
+            //checks for first parse success and attempts second
+            if (declarationList.C1 != null)
+            {
+                declarationList.C2 = parseDeclarationList(tokens, ref position);
+            }
+            //checks for first parse fail and returns fail
+            else
+            {
+                return null;
+            }
+            return declarationList;
+        }
+
+        //............................................................................
+        //parses a declaration
+        //............................................................................
+        public treeNode parseDeclaration(List<token> tokens, ref int position)
+        {
+            treeNode declaration = null;
+            //parses a declaration
+            //checks if declaration is a function
+            declaration = new treeNode("declaration", tokens[position].line, "declaration", parseFunDeclaration(tokens, ref position), null, null);
+            //checks if declaration is a variable
+            if (declaration.C1 == null)
+            {
+                declaration = new treeNode("declaration", tokens[position].line, "declaration", parseVarDeclaration(tokens, ref position), null, null);
+            }
+            if (declaration.C1 == null)
+            {
+                return null;
+            }
+            return declaration;
+        }
+
+        /*//............................................................................
+        //parses a varDeclaration
+        //............................................................................
+        public treeNode parseVarDeclaration(List<token> tokens, ref int position)
+        {
+            treeNode varDeclaration = null;
+            //parses a varDeclaration
+            try
+            {
+                //checks if varDeclaration is an int
+                if ((tokens[position].type == "int" || tokens[position].type == "void") & tokens[position+1].type == "id" & tokens[position+2].type == "semicolon")
                 {
-                    System.Console.WriteLine("parse complete");
+                    varDeclaration = new treeNode("intDeclaration", tokens[position].line, tokens[position+1].value, null, null, null);
+                    position += 3;
+                }
+                //checks if varDeclaration is an array
+                else if ((tokens[position].type == "int" || tokens[position].type == "void") & tokens[position+1].type == "id" & tokens[position+2].type == "lBracket" & tokens[position+3].type == "number" & tokens[position+4].type == "rBracket" & tokens[position+5].type == "semicolon")
+                {
+                    varDeclaration = new treeNode("arrayDeclaration", tokens[position].line, tokens[position+1].value, null, null, null);
+                    position += 6;
                 }
                 else
                 {
-                    error("expected end of file, except found more characters");
+                    return null;
                 }
             }
-            else
+            catch (System.ArgumentOutOfRangeException)
             {
-                error("expected EOF character, except found more characters");
+                return null;
             }
-            return ast;
+            return varDeclaration;
         }
-        //............................................................................
-        //parses an array instantiation
-        //............................................................................
-        public treeNode parseArray(List<token> tokens)
-        {
-            treeNode array = new treeNode(null, 0, null, null, null, null, null);
-            //check for array instantiation 
-            if (tokens[0].type == "int" & tokens[1].type=="id"&tokens[2].type=="lBracket"&(tokens[3].type=="number"||tokens[3].type=="id")&tokens[4].type=="rBracket"&tokens[5].type=="semicolon")
-            {
-                array.nodeType = "array";
-                array.lineNumber = tokens[0].line;
-                array.sValue = tokens[1].value;
-                tokens.RemoveAt(0);
-            }
-            //check for array parameter
-            else if (tokens[0].type == "int" & tokens[1].type == "id" & tokens[2].type == "lBracket" & tokens[3].type == "rBracket" & (tokens[4].type == "comma"||tokens[4].type == "rParenthesis"))
-            {
-                array.nodeType = "array";
-                array.lineNumber = tokens[0].line;
-                array.sValue = tokens[1].value;
-                //pops off stack
-                for(int i=0;i<4;i++)
-                {
-                    tokens.RemoveAt(0);
-                }
-                //checks for another parameter
-                if(tokens[0].type=="comma")
-                {
-                    tokens.RemoveAt(0);
-                    //checks if sibling is a variable
-                    if (tokens[0].type == "int" & tokens[1].type == "id" & tokens[2].type == "semicolon")
-                    {
-                        array.sibling=parseVariable(tokens);
-                    }
-                    //checks if sibling is an array
-                    else if (tokens[0].type == "int" & tokens[1].type == "id" & tokens[2].type == "lBracket")
-                    {
-                        array.sibling=parseArray(tokens);
-                    }
-                }
-                //otherwise pops and ends
-                tokens.RemoveAt(0);
-            }
-            return array;
-        }
-        //............................................................................
-        //parses a variable declaration
-        //............................................................................
-        /*public List<treeNode> parseDeclaration(List<treeNode> syntaxTree, List<token> tokens)
-        {
-            if ()
-            {
 
-            }
-            return syntaxTree;
-        }*/
         //............................................................................
-        //parses a function call
+        //parses a funDeclaration
         //............................................................................
-        /*public List<treeNode> parseFunction(List<treeNode> syntaxTree, List<token> tokens)
+        public treeNode parseFunDeclaration(List<token> tokens, ref int position)
         {
-            //checks for return type
-            if (tokens[0].type=="int"||tokens[0].type=="void")
+            int initialposition = position;
+            treeNode funDeclaration = null;
+            //parses a funDeclaration
+             try
+             {
+                 //checks if funDeclaration
+                 if ((tokens[position].type == "int" || tokens[position].type == "void") & tokens[position + 1].type == "id" & tokens[position + 2].type == "lParenthesis")
+                 {
+                     funDeclaration = new treeNode("funDeclaration", tokens[position].line, tokens[position+1].value,null, null, null);
+                     funDeclaration.C1 = parseParams(tokens, ref position);
+                     funDeclaration.C2 = parseCompoundStmt(tokens, ref position);
+
+                 }
+                 else
+                 {
+                     position = initialposition;
+                     return null;
+                 }
+             }
+             catch (System.ArgumentOutOfRangeException)
+             {
+                 position = initialposition;
+                 return null;
+             }
+             return funDeclaration;
+        }
+        //............................................................................
+        //parses a params
+        //............................................................................
+        public treeNode parseParams(List<token> tokens, ref int position)
+        {
+            int initialposition = position;
+            treeNode funDeclaration = null;
+            //parses a funDeclaration
+            try
             {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                error("expected return type, except found "+tokens[0].type+" on line "+tokens[0].line);
-            }
-            //checks for function name
-            if (tokens[0].type == "id"|| tokens[0].type == "main")
-            {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                error("expected function id type, except found " + tokens[0].type + " on line " + tokens[0].line);
-            }
-            //checks for left parenthesis
-            if (tokens[0].type == "lParenthesis")
-            {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                error("expected lParenthesis, except found " + tokens[0].type + " on line " + tokens[0].line);
-            }
-            //checks for parameters
-            if (tokens[0].type == "void")
-            {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                while (tokens[0].type == "int")
-                { 
-                    syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                    tokens.RemoveAt(0);
-                    //checks for parameter name
-                    if (tokens[0].type == "id")
-                    {
-                        syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                        tokens.RemoveAt(0);
-                    }
-                    else
-                    {
-                        error("expected id, except found " + tokens[0].type + "on line" + tokens[0].line);
-                    }
+                //checks if params
+                if (tokens[position].type == "void")
+                {
+                    funDeclaration = new treeNode("params", tokens[0].line, "void", null, null, null);
+                    position += 1;
+                }
+                else
+                {
+                    position = initialposition;
+                    return null;
                 }
             }
-            //checks for right parenthesis
-            if (tokens[0].type == "rParenthesis")
+            catch (System.ArgumentOutOfRangeException)
             {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
+                position = initialposition;
+                return null;
             }
-            else
-            {
-                error("expected rParenthesis, except found " + tokens[0].type + " on line " + tokens[0].line);
-            }
-            //checks for left bracket
-            if (tokens[0].type == "lBrace")
-            {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                error("expected lBrace, except found " + tokens[0].type + " on line " + tokens[0].line);
-            }
-            //check for stuff?
-            //checks for right brace
-            if (tokens[0].type == "rBrace")
-            {
-                syntaxTree.Add(new treeNode(tokens[0].type, tokens[0].line, tokens[0].value));
-                tokens.RemoveAt(0);
-            }
-            else
-            {
-                error("expected rBrace, except found " + tokens[0].type + " on line " + tokens[0].line);
-            }
-            return syntaxTree;
+            return funDeclaration;
         }*/
     }
 }

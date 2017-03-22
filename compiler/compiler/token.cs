@@ -17,5 +17,11 @@ namespace compiler
             type = "";
             line = lineNumber;
         }
+        public token(string tokenType, string valueString, int lineNumber)
+        {
+            value = valueString;
+            type = tokenType;
+            line = lineNumber;
+        }
     }
 }

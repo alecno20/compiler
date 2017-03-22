@@ -57,7 +57,7 @@
                     currentToken += fileContents[i];
                 }
                 //check for special characters
-                else if (fileContents[i] == ';' || fileContents[i] == '(' || fileContents[i] == ')' || fileContents[i] == '{' || fileContents[i] == '}' || fileContents[i] == '+' || fileContents[i] == '/' || fileContents[i] == '*' || fileContents[i] == '-' || fileContents[i] == '=' || fileContents[i] == '!')
+                else if (fileContents[i] == '[' || fileContents[i] == ']' || fileContents[i] == ';' || fileContents[i] == '(' || fileContents[i] == ')' || fileContents[i] == '{' || fileContents[i] == '}' || fileContents[i] == '+' || fileContents[i] == '/' || fileContents[i] == '*' || fileContents[i] == '-' || fileContents[i] == '=' || fileContents[i] == '!')
                 {
                     if (!(string.IsNullOrEmpty(currentToken)))
                     {
@@ -74,8 +74,6 @@
                     }
                 }
             }
-            //adds EOF token
-            tokens.Add(new token("EOF",line));
             return tokens;
         }
         //prints the value of the tokens
@@ -97,7 +95,8 @@
         //converts to tokens
         public System.Collections.Generic.List<token> tokenizer(System.Collections.Generic.List<token> tokens)
         {
-            for (int i = 0; i < tokens.Count; i++)
+            int i = 0;
+            for (i = 0; i < tokens.Count; i++)
             {   
                 switch (tokens[i].value)
                 {
@@ -175,11 +174,7 @@
                         break;
                     default:
                         //checks if it is a variable
-                        if (tokens[i].value == "EOF" || i == (tokens.Count - 1))
-                        {
-                            tokens[i].type = "EOF";
-                        }
-                        else if (char.IsLetter(tokens[i].value[0]))
+                        if (char.IsLetter(tokens[i].value[0]))
                         {
                             tokens[i].type = "id";
                         }
@@ -192,6 +187,8 @@
                         break;
                 }
             }
+            //adds EOF token
+            tokens.Add(new token("EOF","EOF",tokens[i-1].line));
             return tokens;
         }
 
