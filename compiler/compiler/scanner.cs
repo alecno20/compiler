@@ -8,7 +8,6 @@
             string fileContents=getFile(fileName);
             System.Console.WriteLine(fileContents);
             System.Collections.Generic.List<token> tokens =toStrings(fileContents);
-            printValues(tokens);
             tokens = tokenizer(tokens);
             printTokens(tokens);
             return tokens;

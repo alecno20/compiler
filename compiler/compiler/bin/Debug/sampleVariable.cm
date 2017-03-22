@@ -1,3 +1,2 @@
 int a;
-int b[1];
-int fart ( void
+int a(void)
