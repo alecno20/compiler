@@ -1,2 +1,25 @@
-void main( void) {
+int x; int y;
+int z[10];
+
+void f( void ) {
+	int i;
+	i = 0;
+	while( i < 10 ) {
+		z[ i ] = 100 + 2 * i;
+		i = i + 1;
+
+	}
+}
+
+void g( void ) {
+	int i;
+	i = 0;
+	while( i < 10 ) {
+		i = i + 1;
+	}
+}
+
+void main( void ) {
+	f();
+	g();
 }

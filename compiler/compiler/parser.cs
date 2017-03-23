@@ -13,43 +13,92 @@ namespace compiler
         //............................................................................
         //prints parse tree
         //............................................................................
-        public void printParseTree(treeNode ast)
+        public void printParseTree(treeNode ast, int indents)
         {
-            Console.WriteLine("type:" + ast.nodeType + " name:" + ast.name + " line:" + ast.lineNumber);
+            for(int i = 0;i <= indents; i++)
+            {
+                Console.Write(" ");
+            }
+            Console.WriteLine("Node Type:" + ast.nodeType);
+            for (int i = 0; i <= indents; i++)
+            {
+                Console.Write(" ");
+            }
+            Console.WriteLine(" Line Number:" + ast.lineNumber);
+            for (int i = 0; i <= indents; i++)
+            {
+                Console.Write(" ");
+            }
+            Console.WriteLine(" name:" + ast.name);
             if (ast.C1 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C1");
-                printParseTree(ast.C1);
+                printParseTree(ast.C1,indents);
             }
             if (ast.C2 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C2");
-                printParseTree(ast.C2);
+                printParseTree(ast.C2, indents);
             }
             if (ast.C3 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C3");
-                printParseTree(ast.C3);
+                printParseTree(ast.C3, indents);
             }
             if (ast.C4 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C4");
-                printParseTree(ast.C4);
+                printParseTree(ast.C4, indents);
             }
             if (ast.C5 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C5");
-                printParseTree(ast.C5);
+                printParseTree(ast.C5, indents);
             }
             if (ast.C6 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C6");
-                printParseTree(ast.C6);
+                printParseTree(ast.C6, indents);
             }
             if (ast.C7 != null)
             {
+                indents += 1;
+                for (int i = 0; i <= indents; i++)
+                {
+                    Console.Write(" ");
+                }
                 Console.WriteLine("C7");
-                printParseTree(ast.C7);
+                printParseTree(ast.C7, indents);
             }
 
         }
@@ -64,6 +113,7 @@ namespace compiler
             System.Console.ReadKey();
             Environment.Exit(0);
         }
+            
 
         //............................................................................
         //terminals
@@ -126,8 +176,8 @@ namespace compiler
             }
             else
             {
-                printParseTree(program);
-                error("wanted eof, got: " + tokens[position].type + " error on line" + tokens[position].line);
+                printParseTree(program, 0);
+                error(" error in parse branch with origin on line" + tokens[position].line);
             }
             return program;
         }
@@ -194,7 +244,7 @@ namespace compiler
             if (varDeclaration.C1 == null || varDeclaration.C2 == null || varDeclaration.C3 == null)
             {
                 position = initialPosition;
-                varDeclaration = new treeNode("varDeclaration", tokens[position].line, "varDeclaration", parseTypeSpecifier(tokens, ref position), parseId(tokens, ref position), parseTerminal(tokens, ref position,"'Bracket"), parseNumber(tokens, ref position), parseTerminal(tokens, ref position, "rBracket"), parseTerminal(tokens, ref position,"semicolon"));
+                varDeclaration = new treeNode("varDeclaration", tokens[position].line, "varDeclaration", parseTypeSpecifier(tokens, ref position), parseId(tokens, ref position), parseTerminal(tokens, ref position,"lBracket"), parseNumber(tokens, ref position), parseTerminal(tokens, ref position, "rBracket"), parseTerminal(tokens, ref position,"semicolon"));
                 if (varDeclaration.C1 == null || varDeclaration.C2 == null || varDeclaration.C3 == null || varDeclaration.C4 == null || varDeclaration.C5 == null || varDeclaration.C6 == null)
                 {
                     position = initialPosition;
@@ -237,8 +287,14 @@ namespace compiler
         {
              int initialPosition = position;
              treeNode funDeclaration = null;
-             funDeclaration = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTypeSpecifier(tokens, ref position),parseId(tokens, ref position),parseTerminal(tokens, ref position,"lParenthesis"),parseParams(tokens, ref position),parseTerminal(tokens,ref position,"rParenthesis"), parseCompoundStmt(tokens, ref position));
-             //checks for correct parse
+            funDeclaration = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTypeSpecifier(tokens, ref position), parseId(tokens, ref position), parseTerminal(tokens, ref position, "lParenthesis"));
+            if (funDeclaration.C1 != null & funDeclaration.C2 != null & funDeclaration.C3 != null)
+            {
+                funDeclaration.C4 = parseParams(tokens, ref position);
+                funDeclaration.C5 = parseTerminal(tokens, ref position, "rParenthesis");
+                funDeclaration.C6 = parseCompoundStmt(tokens, ref position);
+            }
+            //checks for correct parse
              if (funDeclaration.C1 == null || funDeclaration.C2 == null || funDeclaration.C3 == null || funDeclaration.C4 == null || funDeclaration.C5 == null|| funDeclaration.C6 == null)
              {
                  position = initialPosition;
@@ -277,7 +333,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode paramsList = null;
-            paramsList = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseParam(tokens, ref position),parseTerminal(tokens, ref position,"comma"));
+            paramsList = new treeNode("paramsList", tokens[position].line, "paramsList", parseParam(tokens, ref position),parseTerminal(tokens, ref position,"comma"));
             //checks for correct parse
             if (paramsList.C1!=null& paramsList.C2 != null)
             {
@@ -298,12 +354,12 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode param = null;
-            param = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTypeSpecifier(tokens, ref position),parseId(tokens, ref position),parseTerminal(tokens, ref position,"lBracket"), parseTerminal(tokens, ref position,"rBracket"));
+            param = new treeNode("param", tokens[position].line, "param", parseTypeSpecifier(tokens, ref position),parseId(tokens, ref position),parseTerminal(tokens, ref position,"lBracket"), parseTerminal(tokens, ref position,"rBracket"));
             //checks for correct parse
             if (param.C1 == null || param.C2 == null|| param.C3 == null || param.C4 == null)
             {
                 position = initialPosition;
-                param = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTypeSpecifier(tokens, ref position), parseId(tokens, ref position));
+                param = new treeNode("param", tokens[position].line, "param", parseTypeSpecifier(tokens, ref position), parseId(tokens, ref position));
                 if (param.C1 == null || param.C2 == null)
                 {
                     position = initialPosition;
@@ -320,7 +376,13 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode compoundStmt = null;
-            compoundStmt= new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"lBrace"), parseLocalDeclaration(tokens, ref position), parseStatementList(tokens, ref position), parseTerminal(tokens, ref position,"rBrace"));
+            compoundStmt = new treeNode("compoundStmt", tokens[position].line, "compoundStmt", parseTerminal(tokens, ref position, "lBrace"));
+            if (compoundStmt.C1 != null)
+            {
+                compoundStmt.C2 = parseLocalDeclaration(tokens, ref position);
+                compoundStmt.C3 = parseStatementList(tokens, ref position);
+                compoundStmt.C4 = parseTerminal(tokens, ref position, "rBrace");
+            }
             //checks for correct parse
             if (compoundStmt.C1 == null || compoundStmt.C4 == null)
             {
@@ -357,10 +419,10 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode statementList = null;
-            statementList = new treeNode("localDeclaration", tokens[position].line, "localDeclaration", parseStatement(tokens, ref position));
+            statementList = new treeNode("statementList", tokens[position].line, "statementList", parseStatement(tokens, ref position));
             if (statementList.C1 != null)
             {
-                statementList.C2 = parseLocalDeclaration(tokens, ref position);
+                statementList.C2 = parseStatementList(tokens, ref position);
             }
             if (statementList.C1 == null)
             {
@@ -377,23 +439,23 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode statement = null;
-            statement = new treeNode("localDeclaration", tokens[position].line, "localDeclaration",parseExpressionStmt(tokens, ref position));
+            statement = new treeNode("statement", tokens[position].line, "statement", parseExpressionStmt(tokens, ref position));
             if (statement.C1 == null)
             { 
                 position = initialPosition;
-                statement = new treeNode("localDeclaration", tokens[position].line, "localDeclaration", parseCompoundStmt(tokens, ref position));
+                statement = new treeNode("statement", tokens[position].line, "statement", parseCompoundStmt(tokens, ref position));
                 if (statement.C1 == null)
                 {
                     position = initialPosition;
-                    statement = new treeNode("localDeclaration", tokens[position].line, "localDeclaration", parseSelectionStmt(tokens, ref position));
+                    statement = new treeNode("statement", tokens[position].line, "statement", parseSelectionStmt(tokens, ref position));
                     if (statement.C1 == null)
                     {
                         position = initialPosition;
-                        statement = new treeNode("localDeclaration", tokens[position].line, "localDeclaration", parseIterationStmt(tokens, ref position));
+                        statement = new treeNode("statement", tokens[position].line, "statement", parseIterationStmt(tokens, ref position));
                         if (statement.C1 == null)
                         {
                             position = initialPosition;
-                            statement = new treeNode("localDeclaration", tokens[position].line, "localDeclaration", parseReturnStmt(tokens, ref position));
+                            statement = new treeNode("statement", tokens[position].line, "statement", parseReturnStmt(tokens, ref position));
                             if (statement.C1 == null)
                             {
                                 position = initialPosition;
@@ -412,12 +474,35 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode selectionStmt = null;
-            selectionStmt = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"if"), parseTerminal(tokens, ref position,"lParenthesis"), parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"rParenthesis"), parseStatement(tokens, ref position), parseTerminal(tokens, ref position,"else"), parseStatement(tokens, ref position));
+            selectionStmt = new treeNode("selectStmt", tokens[position].line, "selectStmt", parseTerminal(tokens, ref position, "if"), parseTerminal(tokens, ref position, "lParenthesis"));
+            if(selectionStmt.C1!=null& selectionStmt.C2 != null)
+            {
+                selectionStmt.C3 = parseExpression(tokens, ref position);
+                selectionStmt.C4 = parseTerminal(tokens, ref position, "rParenthesis");
+            }
+            if (selectionStmt.C3 != null & selectionStmt.C4 != null)
+            {
+                selectionStmt.C5 = parseStatement(tokens, ref position);
+                selectionStmt.C6 = parseTerminal(tokens, ref position, "else");
+            }
+            if (selectionStmt.C5 != null & selectionStmt.C6 != null)
+            {
+                selectionStmt.C7 = parseStatement(tokens, ref position);
+            }
             //checks for correct parse
             if (selectionStmt.C1 == null || selectionStmt.C2 == null || selectionStmt.C3 == null || selectionStmt.C4 == null || selectionStmt.C5 == null || selectionStmt.C6 == null || selectionStmt.C7 == null)
             {
                 position = initialPosition;
-                selectionStmt = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"if"), parseTerminal(tokens, ref position,"lParenthesis"), parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"rParenthesis"), parseStatement(tokens, ref position));
+                selectionStmt = new treeNode("selectStmt", tokens[position].line, "selectStmt", parseTerminal(tokens, ref position, "if"), parseTerminal(tokens, ref position, "lParenthesis"));
+                if (selectionStmt.C1 != null & selectionStmt.C2 != null)
+                {
+                    selectionStmt.C3 = parseExpression(tokens, ref position);
+                    selectionStmt.C4 = parseTerminal(tokens, ref position, "rParenthesis");
+                }
+                if (selectionStmt.C3 != null & selectionStmt.C4 != null)
+                {
+                    selectionStmt.C5=parseStatement(tokens, ref position);
+                }
                 if (selectionStmt.C1 == null || selectionStmt.C2 == null || selectionStmt.C3 == null || selectionStmt.C4 == null || selectionStmt.C5 == null)
                 {
                     position = initialPosition;
@@ -434,7 +519,16 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode iterationStmt = null;
-            iterationStmt = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"while"), parseTerminal(tokens, ref position,"lParenthesis"), parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"rParenthesis"), parseStatement(tokens, ref position));
+            iterationStmt = new treeNode("iterationStmt", tokens[position].line, "iterationStmt", parseTerminal(tokens, ref position, "while"), parseTerminal(tokens, ref position, "lParenthesis"));
+            if (iterationStmt.C1 != null & iterationStmt.C2 != null)
+            {
+                iterationStmt.C3 = parseExpression(tokens, ref position);
+                iterationStmt.C4 = parseTerminal(tokens, ref position, "rParenthesis");
+            }
+            if (iterationStmt.C3 != null & iterationStmt.C4 != null)
+            {
+                iterationStmt.C5 = parseStatement(tokens, ref position);
+            }
             //checks for correct parse
             if (iterationStmt.C1 == null || iterationStmt.C2 == null || iterationStmt.C3 == null || iterationStmt.C4 == null || iterationStmt.C5 == null)
             {
@@ -475,12 +569,12 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode expressionStmt = null;
-            expressionStmt = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseExpression(tokens, ref position),parseTerminal(tokens, ref position,"semicolon"));
+            expressionStmt = new treeNode("expressionStmt", tokens[position].line, "expressionStmt", parseExpression(tokens, ref position),parseTerminal(tokens, ref position,"semicolon"));
             //checks for correct parse
             if (expressionStmt.C1 == null || expressionStmt.C2 == null)
             {
                 position = initialPosition;
-                expressionStmt = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"semicolon"));
+                expressionStmt = new treeNode("expressionStmt", tokens[position].line, "expressionStmt", parseTerminal(tokens, ref position,"semicolon"));
                 if (expressionStmt.C1 == null)
                 {
                     position = initialPosition;
@@ -497,17 +591,17 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode expression = null;
-            expression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseSimpleExpression(tokens, ref position));
-            if (expression.C1 == null)
+            expression = new treeNode("expression", tokens[position].line, "expression", parseVar(tokens, ref position), parseTerminal(tokens, ref position, "equal"));
+            if (expression.C1 != null & expression.C2 != null)
+            {
+                expression.C3 = parseExpression(tokens, ref position);
+            }
+            if (expression.C1 == null || expression.C2 == null||expression.C3==null)
             {
                 position = initialPosition;
-                expression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseVar(tokens, ref position), parseTerminal(tokens, ref position, "equal"));
-                if (expression.C1 != null & expression.C2 != null)
-                {
-                    expression.C3 = parseExpression(tokens, ref position);
-                }
+                expression = new treeNode("expression", tokens[position].line, "expression", parseSimpleExpression(tokens, ref position));
                 //checks for correct parse
-                if (expression.C1 == null || expression.C2 == null || expression.C3 == null)
+                if (expression.C1 == null)
                 {
                     position = initialPosition;
                     return null;
@@ -523,12 +617,18 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode var= null;
-            var = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseId(tokens, ref position), parseTerminal(tokens, ref position,"lBracket"), parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"rBracket"));
+            var = new treeNode("var", tokens[position].line, "var", parseId(tokens, ref position), parseTerminal(tokens, ref position, "lBracket"));
+               if (var.C1 != null & var.C2 != null)
+            {
+                var.C3 = parseExpression(tokens, ref position);
+                var.C4 = parseTerminal(tokens, ref position, "rBracket");
+            } 
+               
             //checks for correct parse
-            if (var.C1 == null || var.C2 == null || var.C3 == null || var.C3 == null)
+            if (var.C1 == null || var.C2 == null || var.C3 == null || var.C4 == null)
             {
                 position = initialPosition;
-                var = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseId(tokens, ref position));
+                var = new treeNode("var", tokens[position].line, "var", parseId(tokens, ref position));
                 if (var.C1 == null)
                 {
                     position = initialPosition;
@@ -545,12 +645,16 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode simpleExpression = null;
-            simpleExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseAdditiveExpression(tokens, ref position), parseRelop(tokens, ref position), parseAdditiveExpression(tokens, ref position));
+            simpleExpression = new treeNode("simpleExpression", tokens[position].line, "simpleExpression", parseAdditiveExpression(tokens, ref position), parseRelop(tokens, ref position));
+            if (simpleExpression.C1 != null & simpleExpression.C2 != null)
+            {
+                simpleExpression.C3=parseAdditiveExpression(tokens, ref position);
+            }
             //checks for correct parse
             if (simpleExpression.C1 == null || simpleExpression.C2 == null || simpleExpression.C3 == null)
             {
                 position = initialPosition;
-                simpleExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseAdditiveExpression(tokens, ref position));
+                simpleExpression = new treeNode("simpleExpression", tokens[position].line, "simpleExpression", parseAdditiveExpression(tokens, ref position));
                 if (simpleExpression.C1 == null)
                 {
                     position = initialPosition;
@@ -568,7 +672,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode additiveExpression = null;
-            additiveExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerm(tokens, ref position), parseAddop(tokens, ref position));
+            additiveExpression = new treeNode("additiveExpression", tokens[position].line, "additiveExpression", parseTerm(tokens, ref position), parseAddop(tokens, ref position));//problem
             if (additiveExpression.C1!=null&additiveExpression.C2!=null)
             {
                 additiveExpression.C3 = parseAdditiveExpression(tokens, ref position);
@@ -577,7 +681,7 @@ namespace compiler
             if (additiveExpression.C1 == null || additiveExpression.C2 == null || additiveExpression.C3 == null)
             {
                 position = initialPosition;
-                additiveExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerm(tokens, ref position));
+                additiveExpression = new treeNode("additiveExpression", tokens[position].line, "additiveExpression", parseTerm(tokens, ref position));
                 if (additiveExpression.C1 == null)
                 {
                     position = initialPosition;
@@ -594,12 +698,12 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode addopExpression = null;
-            addopExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"plus"));
+            addopExpression = new treeNode("addopExpression", tokens[position].line, "addopExpression", parseTerminal(tokens, ref position,"plus"));
             //checks for correct parse
             if (addopExpression.C1 == null)
             {
                 position = initialPosition;
-                addopExpression = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"minus"));
+                addopExpression = new treeNode("addopExpression", tokens[position].line, "addopExpression", parseTerminal(tokens, ref position,"minus"));
                 if (addopExpression.C1 == null)
                 {
                     position = initialPosition;
@@ -616,7 +720,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode term = null;
-            term = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseFactor(tokens, ref position), parseMulop(tokens, ref position));
+            term = new treeNode("term", tokens[position].line, "term", parseFactor(tokens, ref position), parseMulop(tokens, ref position));//problem
             if (term.C1 != null & term.C2 != null)
             {
                 term.C3 = parseTerm(tokens, ref position);
@@ -625,7 +729,7 @@ namespace compiler
             if (term.C1 == null || term.C2 == null || term.C3 == null)
             {
                 position = initialPosition;
-                term = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseFactor(tokens, ref position));
+                term = new treeNode("term", tokens[position].line, "term", parseFactor(tokens, ref position));
                 if (term.C1 == null)
                 {
                     position = initialPosition;
@@ -642,20 +746,25 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode factor = null;
-            factor= new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"lParenthesis"), parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"rParenthesis"));
+            factor = new treeNode("factor", tokens[position].line, "factor", parseTerminal(tokens, ref position, "lParenthesis"));
+            if(factor.C1!=null)
+            {
+                factor.C2=parseExpression(tokens, ref position);
+                factor.C3=parseTerminal(tokens, ref position, "rParenthesis");//problem
+            }
             //checks for correct parse
             if (factor.C1 == null || factor.C2 == null || factor.C3 == null)
             {
                 position = initialPosition;
-                factor = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseVar(tokens, ref position));
+                factor = new treeNode("factor", tokens[position].line, "factor", parseCall(tokens, ref position));
                 if (factor.C1 == null)
                 {
                     position = initialPosition;
-                    factor = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseCall(tokens, ref position));
+                    factor = new treeNode("factor", tokens[position].line, "factor", parseVar(tokens, ref position));
                     if (factor.C1 == null)
                     {
                         position = initialPosition;
-                        factor = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseNumber(tokens, ref position));
+                        factor = new treeNode("factor", tokens[position].line, "factor", parseNumber(tokens, ref position));
                         if (factor.C1 == null)
                         {
                             position = initialPosition;
@@ -674,28 +783,28 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode relop = null;
-            relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"greaterThan"),parseTerminal(tokens, ref position,"equal"));
+            relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"greaterThan"),parseTerminal(tokens, ref position,"equal"));
             //checks for correct parse
             if (relop.C1 == null || relop.C2 == null)
             {
                 position = initialPosition;
-                relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"lessThan"), parseTerminal(tokens, ref position,"equal"));
+                relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"lessThan"), parseTerminal(tokens, ref position,"equal"));
                 if (relop.C1 == null || relop.C2 == null)
                 {
                     position = initialPosition;
-                    relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"equal"), parseTerminal(tokens, ref position,"equal"));
+                    relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"equal"), parseTerminal(tokens, ref position,"equal"));
                     if (relop.C1 == null || relop.C2 == null)
                     {
                         position = initialPosition;
-                        relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"not"), parseTerminal(tokens, ref position,"equal"));
+                        relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"not"), parseTerminal(tokens, ref position,"equal"));
                         if (relop.C1 == null || relop.C2 == null)
                         {
                             position = initialPosition;
-                            relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"greaterThan"));
+                            relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"greaterThan"));
                             if (relop.C1 == null)
                             {
                                 position = initialPosition;
-                                relop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"lessThan"));
+                                relop = new treeNode("relop", tokens[position].line, "relop", parseTerminal(tokens, ref position,"lessThan"));
                                 if (relop.C1 == null)
                                 {
                                     position = initialPosition;
@@ -716,7 +825,12 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode call = null;
-            call = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseId(tokens, ref position), parseTerminal(tokens, ref position,"lParenthesis"), parseArgs(tokens, ref position), parseTerminal(tokens, ref position,"rParenthesis"));
+            call = new treeNode("call", tokens[position].line, "call", parseId(tokens, ref position), parseTerminal(tokens, ref position, "lParenthesis"));
+            if(call.C1!=null& call.C2 != null)
+            {
+                call.C3=parseArgs(tokens, ref position);
+                call.C4=parseTerminal(tokens, ref position, "rParenthesis");
+            }
             //checks for correct parse
             if (call.C1 == null || call.C2 == null || call.C4 == null)
             {
@@ -733,7 +847,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode args = null;
-            args = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseArgList(tokens, ref position));
+            args = new treeNode("args", tokens[position].line, "args", parseArgList(tokens, ref position));
             //checks for correct parse
             if (args.C1 == null)
             {
@@ -750,7 +864,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode argList = null;
-            argList = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"comma"));
+            argList = new treeNode("argList", tokens[position].line, "argList", parseExpression(tokens, ref position), parseTerminal(tokens, ref position,"comma"));
             if (argList.C1 != null & argList.C2 != null)
             {
                 argList.C3 = parseArgList(tokens, ref position);
@@ -759,7 +873,7 @@ namespace compiler
             if (argList.C1 == null || argList.C2 == null || argList.C3 == null)
             {
                 position = initialPosition;
-                argList = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseExpression(tokens, ref position));
+                argList = new treeNode("argList", tokens[position].line, "argList", parseExpression(tokens, ref position));
                 if (argList.C1 == null)
                 {
                     position = initialPosition;
@@ -776,7 +890,7 @@ namespace compiler
         {
             int initialPosition = position;
             treeNode mulop = null;
-            mulop = new treeNode("funDeclaration", tokens[position].line, "funDeclaration", parseTerminal(tokens, ref position,"multiply"));
+            mulop = new treeNode("mulop", tokens[position].line, "mulop", parseTerminal(tokens, ref position,"multiply"));
             //checks for correct parse
             if (mulop.C1 == null)
             {

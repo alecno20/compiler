@@ -6,9 +6,11 @@
         public System.Collections.Generic.List<token> scan(string fileName)
         {
             string fileContents=getFile(fileName);
+            System.Console.WriteLine("FILE CONTENTS:");
             System.Console.WriteLine(fileContents);
             System.Collections.Generic.List<token> tokens =toStrings(fileContents);
             tokens = tokenizer(tokens);
+            System.Console.WriteLine("FILE TOKENS:");
             printTokens(tokens);
             return tokens;
         }
@@ -16,7 +18,7 @@
         //converts file to string
         public string getFile(string fileName)
         {
-            System.Console.WriteLine("opening fie"+fileName);
+            System.Console.WriteLine("opening file:"+fileName);
             string file;
             if (System.IO.File.Exists(fileName))
             {
@@ -58,7 +60,7 @@
                     currentToken += fileContents[i];
                 }
                 //check for special characters
-                else if (fileContents[i] == '[' || fileContents[i] == ']' || fileContents[i] == ';' || fileContents[i] == '(' || fileContents[i] == ')' || fileContents[i] == '{' || fileContents[i] == '}' || fileContents[i] == '+' || fileContents[i] == '/' || fileContents[i] == '*' || fileContents[i] == '-' || fileContents[i] == '=' || fileContents[i] == '!')
+                else if (fileContents[i] == '[' || fileContents[i] == ']' || fileContents[i] == ';' || fileContents[i] == '(' || fileContents[i] == ')' || fileContents[i] == '{' || fileContents[i] == '}' || fileContents[i] == '+' || fileContents[i] == '/' || fileContents[i] == '*' || fileContents[i] == '-' || fileContents[i] == '=' || fileContents[i] == '!' || fileContents[i] == ',' || fileContents[i] == '<' || fileContents[i] == '>')
                 {
                     if (!(string.IsNullOrEmpty(currentToken)))
                     {
@@ -90,7 +92,7 @@
         {
             for (int i = 0; i < tokens.Count; i++)
             {
-                System.Console.WriteLine("token- type:"+tokens[i].type+" value:"+tokens[i].value+" line:"+tokens[i].line);
+                System.Console.WriteLine("token- type:"+tokens[i].type+" value:"+tokens[i].value+" line:"+tokens[i].line+" position:"+i );
             }
         }
         //converts to tokens

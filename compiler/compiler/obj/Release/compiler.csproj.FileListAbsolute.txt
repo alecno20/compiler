@@ -1,0 +1,5 @@
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Release\compiler.exe.config
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Release\compiler.exe
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\bin\Release\compiler.pdb
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Release\compiler.exe
+C:\Users\alecno20\Documents\GitHub\compiler\compiler\compiler\obj\Release\compiler.pdb

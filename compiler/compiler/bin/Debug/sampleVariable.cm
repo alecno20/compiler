@@ -1,5 +1,5 @@
 int a;
-int a(void){
+void main (void) {
 	int b;
 	b=10;
 }
